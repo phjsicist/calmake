@@ -1,5 +1,7 @@
 \documentclass{article}
 
+\usepackage[utf8]{inputenc}
+
 \usepackage{geometry}
 \geometry{width=\paperwidth}
 
@@ -12,7 +14,7 @@
 
 \begin{minipage}{0.35\linewidth}
     \rmfamily
-    \resizebox{\linewidth}{\textheight}{ \VAR{month} }
+    \resizebox{\linewidth}{\textheight}{ \VAR{month_name} }
 \end{minipage}
 \hspace{0.05\linewidth}
 \begin{minipage}{0.55\linewidth}
@@ -20,12 +22,8 @@
     \large
     \setlength\extrarowheight{5pt}
     \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}} cccccccc}
-        M & T & W & T & F & S & S \\
-        1 & 2 & 3 & 4 & 5 & 6 & 7 \\
-        8 & 9 & 10 & 11 & 12 & 13 & 14 \\
-        15 & 16 & 17 & 18 & 19 & 20 & 21 \\
-        22 & 23 & 24 & 25 & 26 & 27 & 28 \\
-        29 & 30 & 31
+        \VAR{weekdays_line}
+        \VAR{dates_grid}
     \end{tabular*}
 \end{minipage}
 

@@ -1,2 +1,4 @@
 *.pdf
+.tex
 .venv
+__pycache__
