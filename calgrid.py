@@ -2,6 +2,7 @@ import argparse
 import calendar
 import datetime
 import os
+import subprocess
 
 import jinja2
 
@@ -22,14 +23,14 @@ latex_jinja_env = jinja2.Environment(
 	line_comment_prefix = r'%#',
 	trim_blocks = True,
 	autoescape = False,
-	loader = jinja2.FileSystemLoader(os.path.abspath('.'))
+	loader = jinja2.FileSystemLoader(os.path.abspath('.\\templates'))
 )
 
-language = 'fr'
+language = 'de'
 
 tex_kwargs = {
-	'month': 2,
-    'year': 2024,
+	'month': 3,
+    'year': 2025,
 	'weekdays_line': ' & '.join(DAYS2[language]) + '\\\\',
     'dates_grid': '1 & 2 & 3 & 4 & 5 & 6 & 7 \\\\ 8 & 9 & 10 & 11 & 12 & 13 & 14 \\\\ 15 & 16 & 17 & 18 & 19 & 20 & 21 \\\\ 22 & 23 & 24 & 25 & 26 & 27 & 28 \\\\ 29 & 30 & 31 & & & &',
 }
@@ -46,5 +47,14 @@ tex_kwargs['month_name'] = MONTHS[language][tex_kwargs['month'] - 1]
 
 template = latex_jinja_env.get_template('calgrid.tex.jinja')
 
-with open(args.filename, 'w', encoding='utf-8') as f:
+output_dir = 'output' + os.sep + args.filename
+os.makedirs(output_dir, exist_ok=True)
+
+with open(output_dir + os.sep + args.filename + '.tex', 'w', encoding='utf-8') as f:
     f.write(template.render(**tex_kwargs))
+
+subprocess.run(['pdflatex',
+                output_dir + os.sep + args.filename + '.tex',
+                '-output-directory=' + output_dir,
+                '-interaction=nonstopmode']
+)
