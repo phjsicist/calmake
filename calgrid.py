@@ -21,29 +21,28 @@ latex_jinja_env = jinja2.Environment(
 	comment_end_string = '}',
 	line_statement_prefix = r'%%',
 	line_comment_prefix = r'%#',
+    lstrip_blocks = True,
 	trim_blocks = True,
 	autoescape = False,
 	loader = jinja2.FileSystemLoader(os.path.abspath('.\\templates'))
 )
 
 language = 'de'
+no_of_weeks_per_line = 1
+month = 3
+year = 2025
+
+first_weekday = datetime.date(year, month, 1).weekday()
+length_of_month = calendar.monthrange(year, month)[1]
 
 tex_kwargs = {
-	'month': 3,
-    'year': 2025,
-	'weekdays_line': ' & '.join(DAYS2[language]) + '\\\\',
-    'dates_grid': '1 & 2 & 3 & 4 & 5 & 6 & 7 \\\\ 8 & 9 & 10 & 11 & 12 & 13 & 14 \\\\ 15 & 16 & 17 & 18 & 19 & 20 & 21 \\\\ 22 & 23 & 24 & 25 & 26 & 27 & 28 \\\\ 29 & 30 & 31 & & & &',
+	'month': month,
+    'year': year,
+    'no_of_weeks_per_line': no_of_weeks_per_line,
+	'weekdays_line': no_of_weeks_per_line * DAYS1[language],
+    'month_name': MONTHS[language][month - 1],
+	'dates': [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)],
 }
-
-first_weekday = datetime.date(tex_kwargs['year'], tex_kwargs['month'], 1).weekday()
-length_of_month = calendar.monthrange(tex_kwargs['year'], tex_kwargs['month'])[1]
-dates_list = [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)]
-
-tex_kwargs['dates_grid'] = ''
-for i in range(0, len(dates_list), 7):
-	tex_kwargs['dates_grid'] += ' & '.join(dates_list[i:i+7]) + ' \\\\ '
-
-tex_kwargs['month_name'] = MONTHS[language][tex_kwargs['month'] - 1]
 
 template = latex_jinja_env.get_template('calgrid.tex.jinja')
 

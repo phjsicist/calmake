@@ -21,9 +21,16 @@
     \sffamily
     \large
     \setlength\extrarowheight{5pt}
-    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}} cccccccc}
-        \VAR{weekdays_line}
-        \VAR{dates_grid}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}} \VAR{7*no_of_weeks_per_line*'c'}}
+        \VAR{ weekdays_line|join('&') } \\
+        \BLOCK{ for d in dates }
+        \VAR{ d -}
+        \BLOCK{ if loop.index % (no_of_weeks_per_line * 7) == 0 }
+        \VAR{- '\\\\' }
+        \BLOCK{ else }
+        \VAR{- '&' -}
+        \BLOCK{ endif }
+        \BLOCK{ endfor +}
     \end{tabular*}
 \end{minipage}
 
