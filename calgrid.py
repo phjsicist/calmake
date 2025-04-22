@@ -12,6 +12,8 @@ from constants import DAYS1, DAYS2, MONTHS
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', '--template-name', type=str, help='Name of the template file', default='default.tex.jinja')
 parser.add_argument('-c', '--config', type=str, help='Name or path of the config file')
+parser.add_argument('-y', '--year', type=int, help='Year of the calendar', default=datetime.datetime.now().year)
+parser.add_argument('-m', '--month', type=int, help='Month(s) of the calendar, leave empty for full year', action='append')
 args = parser.parse_args()
 
 latex_jinja_env = jinja2.Environment(
@@ -50,21 +52,30 @@ if args.config:
 else:
 	config_name = 'default'
 
-first_weekday = datetime.date(config['year'], config['month'], 1).weekday()
-length_of_month = calendar.monthrange(config['year'], config['month'])[1]
-
+config['year'] = args.year
 config['weekdays_line'] = config['no_of_weeks_per_line'] * DAYS1[config['language']]
-config['month_name'] = MONTHS[config['language']][config['month'] - 1]
-config['dates'] = [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)]
 
 output_dir = 'output' + os.sep + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '_' + template_name + '_' + config_name
 os.makedirs(output_dir)
+os.makedirs(output_dir + os.sep + 'logs')
+os.makedirs(output_dir + os.sep + 'pdfs')
 
-with open(output_dir + os.sep + template_name + '_' + config_name + '.tex', 'w', encoding='utf-8') as f:
-    f.write(template.render(**config))
+months = args.month if args.month else [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+for month in months:
+	file_identifier = f'{month:02d}'
 
-subprocess.run(['pdflatex',
-                output_dir + os.sep + template_name + '_' + config_name + '.tex',
-                '-output-directory=' + output_dir,
-                '-interaction=nonstopmode']
-)
+	first_weekday = datetime.date(config['year'], month, 1).weekday()
+	length_of_month = calendar.monthrange(config['year'], month)[1]
+
+	config['month_name'] = MONTHS[config['language']][month - 1]
+	config['dates'] = [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)]
+
+	with open(output_dir + os.sep + file_identifier + '.tex', 'w', encoding='utf-8') as f:
+		f.write(template.render(**config))
+
+	subprocess.run(['pdflatex',
+					output_dir + os.sep + file_identifier + '.tex',
+					'-output-directory=' + output_dir + os.sep + 'pdfs',
+					'-aux-directory=' + output_dir + os.sep + 'logs',
+					'-interaction=nonstopmode']
+	)
