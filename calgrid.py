@@ -5,11 +5,13 @@ import os
 import subprocess
 
 import jinja2
+import yaml
 
 from constants import DAYS1, DAYS2, MONTHS
 
 parser = argparse.ArgumentParser()
-parser.add_argument('filename')
+parser.add_argument('-t', '--template-name', type=str, help='Name of the template file', default='default.tex.jinja')
+parser.add_argument('-c', '--config', type=str, help='Name or path of the config file')
 args = parser.parse_args()
 
 latex_jinja_env = jinja2.Environment(
@@ -27,33 +29,42 @@ latex_jinja_env = jinja2.Environment(
 	loader = jinja2.FileSystemLoader(os.path.abspath('.\\templates'))
 )
 
-language = 'de'
-no_of_weeks_per_line = 1
-month = 3
-year = 2025
+template_name = args.template_name.split('.')[0]
+template_path = os.path.abspath('templates' + os.sep + template_name + '.tex.jinja')
+template = latex_jinja_env.get_template(template_name + '.tex.jinja')
 
-first_weekday = datetime.date(year, month, 1).weekday()
-length_of_month = calendar.monthrange(year, month)[1]
+base_config_path = os.path.abspath('templates' + os.sep + template_name + '.yaml')
+with open(base_config_path, 'r', encoding='utf-8') as f:
+	config = yaml.safe_load(f)
 
-tex_kwargs = {
-	'month': month,
-    'year': year,
-    'no_of_weeks_per_line': no_of_weeks_per_line,
-	'weekdays_line': no_of_weeks_per_line * DAYS1[language],
-    'month_name': MONTHS[language][month - 1],
-	'dates': [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)],
-}
+if args.config:
+	if os.path.exists(args.config):
+		config_name = os.path.basename(args.config).split('.')[0]
+		config_path = os.path.abspath(args.config)
+	else:
+		config_name = args.config.split('.')[0]
+		config_path = os.path.abspath('templates' + os.sep + config_name + '.yaml')
+    
+	with open(config_path, 'r', encoding='utf-8') as f:
+		config.update(yaml.safe_load(f))
+else:
+	config_name = 'default'
 
-template = latex_jinja_env.get_template('calgrid.tex.jinja')
+first_weekday = datetime.date(config['year'], config['month'], 1).weekday()
+length_of_month = calendar.monthrange(config['year'], config['month'])[1]
 
-output_dir = 'output' + os.sep + args.filename
-os.makedirs(output_dir, exist_ok=True)
+config['weekdays_line'] = config['no_of_weeks_per_line'] * DAYS1[config['language']]
+config['month_name'] = MONTHS[config['language']][config['month'] - 1]
+config['dates'] = [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)]
 
-with open(output_dir + os.sep + args.filename + '.tex', 'w', encoding='utf-8') as f:
-    f.write(template.render(**tex_kwargs))
+output_dir = 'output' + os.sep + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '_' + template_name + '_' + config_name
+os.makedirs(output_dir)
+
+with open(output_dir + os.sep + template_name + '_' + config_name + '.tex', 'w', encoding='utf-8') as f:
+    f.write(template.render(**config))
 
 subprocess.run(['pdflatex',
-                output_dir + os.sep + args.filename + '.tex',
+                output_dir + os.sep + template_name + '_' + config_name + '.tex',
                 '-output-directory=' + output_dir,
                 '-interaction=nonstopmode']
 )
