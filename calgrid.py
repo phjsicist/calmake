@@ -73,7 +73,7 @@ for month in months:
 	with open(output_dir + os.sep + file_identifier + '.tex', 'w', encoding='utf-8') as f:
 		f.write(template.render(**config))
 
-	subprocess.run(['pdflatex',
+	subprocess.run(['xelatex',
 					output_dir + os.sep + file_identifier + '.tex',
 					'-output-directory=' + output_dir + os.sep + 'pdfs',
 					'-aux-directory=' + output_dir + os.sep + 'logs',

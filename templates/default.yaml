@@ -1,2 +1,20 @@
 language: 'de'
 no_of_weeks_per_line: 1
+
+font:
+  month: 'Garamond'
+  week: 'Franklin Gothic Book'
+  day: 'Franklin Gothic Book'
+
+color:
+  month: [0, 0, 0]
+  week: [0.3, 0.3, 0.3]
+  day: [0, 0, 0]
+
+geometry:
+  paper:
+    width: 300
+    height: 300
+  month:
+    width: 0.4
+    margin: 0.02

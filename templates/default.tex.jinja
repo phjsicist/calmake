@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 
 \usepackage{geometry}
+\geometry{paperwidth=\VAR{geometry.paper.width}mm, paperheight=\VAR{geometry.paper.height}mm}
 \geometry{width=\paperwidth}
 
 \usepackage{graphicx}
@@ -10,21 +11,34 @@
 
 \usepackage{tabularx}
 
+\pagestyle{empty}
+
+\usepackage{fontspec}
+\newfontfamily{\monthfont}{\VAR{font.month}}
+\newfontfamily{\weekfont}{\VAR{font.week}}
+\newfontfamily{\daysfont}{\VAR{font.day}}
+
+\usepackage[table]{xcolor}
+\definecolor{monthcolor}{rgb}{\VAR{color.month|join(',')}}
+\definecolor{weekcolor}{rgb}{\VAR{color.week|join(',')}}
+\definecolor{daycolor}{rgb}{\VAR{color.day|join(',')}}
+
 \begin{document}
 
-\begin{minipage}{0.35\linewidth}
-    \rmfamily
-    \resizebox{\linewidth}{\textheight}{ \VAR{month_name} }
+\begin{minipage}{\VAR{geometry.month.width}\linewidth}
+    \monthfont
+    \resizebox{\linewidth}{\textheight}{ \color{monthcolor} \VAR{month_name} }
 \end{minipage}
-\hspace{0.05\linewidth}
-\begin{minipage}{0.55\linewidth}
-    \sffamily
+\hspace{\VAR{geometry.month.margin}\linewidth}
+\begin{minipage}{\VAR{1 - geometry.month.margin - geometry.month.width}\linewidth}
+    \daysfont
     \large
     \setlength\extrarowheight{5pt}
+    \color{weekcolor}
     \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}} \VAR{7*no_of_weeks_per_line*'c'}}
         \VAR{ weekdays_line|join('&') } \\
         \BLOCK{ for d in dates }
-        \VAR{ d -}
+        \color{daycolor} \VAR{ d -}
         \BLOCK{ if loop.index % (no_of_weeks_per_line * 7) == 0 }
         \VAR{- '\\\\' }
         \BLOCK{ else }
