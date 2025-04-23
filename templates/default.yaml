@@ -1,5 +1,6 @@
 language: 'de'
 no_of_weeks_per_line: 1
+weekday_long_form: false
 
 font:
   month: 'Garamond'

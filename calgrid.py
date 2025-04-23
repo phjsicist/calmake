@@ -62,7 +62,9 @@ else:
 	config_name = 'default'
 
 config['year'] = args.year
-config['weekdays_line'] = config['no_of_weeks_per_line'] * DAYS1[config['language']]
+
+weekdays = DAYS2 if config['weekday_long_form'] else DAYS1
+config['weekdays_line'] = config['no_of_weeks_per_line'] * weekdays[config['language']]
 
 output_dir = 'output' + os.sep + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '_' + template_name + '_' + config_name
 os.makedirs(output_dir)
