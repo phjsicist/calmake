@@ -3,12 +3,12 @@ no_of_weeks_per_line: 1
 
 font:
   month: 'Garamond'
-  week: 'Franklin Gothic Book'
-  day: 'Franklin Gothic Book'
+  week: 'Arial'
+  day: 'Arial'
 
 color:
   month: [0, 0, 0]
-  week: [0.3, 0.3, 0.3]
+  week: [0, 0, 0]
   day: [0, 0, 0]
 
 geometry:
@@ -20,6 +20,7 @@ geometry:
       bottom: 20
       left: 10
       right: 20
-  month:
-    width: 0.4
-    margin: 0.05
+  grid:
+    month_width: 0.4
+    mid_padding: 0.05
+    row_height: 4

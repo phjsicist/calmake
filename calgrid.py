@@ -1,5 +1,6 @@
 import argparse
 import calendar
+import collections.abc
 import datetime
 import os
 import subprocess
@@ -8,6 +9,14 @@ import jinja2
 import yaml
 
 from constants import DAYS1, DAYS2, MONTHS
+
+def update(d, u):
+    for k, v in u.items():
+        if isinstance(v, collections.abc.Mapping):
+            d[k] = update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', '--template-name', type=str, help='Name of the template file', default='default.tex.jinja')
@@ -48,7 +57,7 @@ if args.config:
 		config_path = os.path.abspath('templates' + os.sep + config_name + '.yaml')
     
 	with open(config_path, 'r', encoding='utf-8') as f:
-		config.update(yaml.safe_load(f))
+		update(config, yaml.safe_load(f))
 else:
 	config_name = 'default'
 
@@ -77,5 +86,6 @@ for month in months:
 					output_dir + os.sep + file_identifier + '.tex',
 					'-output-directory=' + output_dir + os.sep + 'pdfs',
 					'-aux-directory=' + output_dir + os.sep + 'logs',
-					'-interaction=nonstopmode']
+					'-interaction=nonstopmode',
+					'-halt-on-error']
 	)

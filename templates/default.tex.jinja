@@ -36,22 +36,21 @@
 \null % for some godforsaken reason, image placement is ignored on empty pages
 
 \begin{figure}[b]
-\begin{minipage}[t][][b]{\VAR{geometry.month.width}\linewidth}%
+\begin{minipage}[t][][b]{\VAR{geometry.grid.month_width}\linewidth}%
     \monthfont
     \resizebox{\linewidth}{\textheight}{ \color{monthcolor} \VAR{month_name} }
 \end{minipage}%
-\hspace{\VAR{geometry.month.margin}\linewidth}%
-\begin{minipage}[t][][t]{\VAR{1 - geometry.month.margin - geometry.month.width}\linewidth}%
+\hspace{\VAR{geometry.grid.mid_padding}\linewidth}%
+\begin{minipage}[t][][t]{\VAR{1 - geometry.grid.mid_padding - geometry.grid.month_width}\linewidth}%
     \daysfont
     \large
-    \setlength\extrarowheight{5pt}
     \color{weekcolor}
-    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}} \VAR{7*no_of_weeks_per_line*'c'}}
-        \VAR{ weekdays_line|join('&') } \\
+    \begin{tabular*}{\linewidth}[t]{@{\extracolsep{\fill}} \VAR{7*no_of_weeks_per_line*'c'}}
+        \VAR{ weekdays_line|join('&') } \\[\VAR{geometry.grid.row_height}mm]
         \BLOCK{ for d in dates }
         \color{daycolor} \VAR{ d -}
         \BLOCK{ if loop.index % (no_of_weeks_per_line * 7) == 0 }
-        \VAR{- '\\\\' }
+        \VAR{- '\\\\' }[\VAR{geometry.grid.row_height}mm]
         \BLOCK{ else }
         \VAR{- '&' -}
         \BLOCK{ endif }
