@@ -42,13 +42,13 @@
 \end{minipage}%
 \hspace{\VAR{geometry.grid.mid_padding}\linewidth}%
 \begin{minipage}[t][][t]{\VAR{1 - geometry.grid.mid_padding - geometry.grid.month_width}\linewidth}%
-    \daysfont
+    \weekfont
     \large
     \color{weekcolor}
     \begin{tabular*}{\linewidth}[t]{@{\extracolsep{\fill}} \VAR{7*no_of_weeks_per_line*'c'}}
         \VAR{ weekdays_line|join('&') } \\[\VAR{geometry.grid.row_height}mm]
         \BLOCK{ for d in dates }
-        \color{daycolor} \VAR{ d -}
+        \color{daycolor} \daysfont \VAR{ d -}
         \BLOCK{ if loop.index % (no_of_weeks_per_line * 7) == 0 }
         \VAR{- '\\\\' }[\VAR{geometry.grid.row_height}mm]
         \BLOCK{ else }
