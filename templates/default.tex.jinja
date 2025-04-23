@@ -3,8 +3,16 @@
 \usepackage[utf8]{inputenc}
 
 \usepackage{geometry}
-\geometry{paperwidth=\VAR{geometry.paper.width}mm, paperheight=\VAR{geometry.paper.height}mm}
-\geometry{width=\paperwidth}
+\geometry{
+    paperwidth=\VAR{geometry.paper.width}mm,
+    paperheight=\VAR{geometry.paper.height}mm
+}
+\geometry{
+    top=\VAR{geometry.paper.margins.top}mm,
+    bottom=\VAR{geometry.paper.margins.bottom}mm,
+    left=\VAR{geometry.paper.margins.left}mm,
+    right=\VAR{geometry.paper.margins.right}mm
+}
 
 \usepackage{graphicx}
 \setkeys{Gin}{keepaspectratio}
@@ -25,12 +33,15 @@
 
 \begin{document}
 
-\begin{minipage}{\VAR{geometry.month.width}\linewidth}
+\null % for some godforsaken reason, image placement is ignored on empty pages
+
+\begin{figure}[b]
+\begin{minipage}[t][][b]{\VAR{geometry.month.width}\linewidth}%
     \monthfont
     \resizebox{\linewidth}{\textheight}{ \color{monthcolor} \VAR{month_name} }
-\end{minipage}
-\hspace{\VAR{geometry.month.margin}\linewidth}
-\begin{minipage}{\VAR{1 - geometry.month.margin - geometry.month.width}\linewidth}
+\end{minipage}%
+\hspace{\VAR{geometry.month.margin}\linewidth}%
+\begin{minipage}[t][][t]{\VAR{1 - geometry.month.margin - geometry.month.width}\linewidth}%
     \daysfont
     \large
     \setlength\extrarowheight{5pt}
@@ -46,6 +57,7 @@
         \BLOCK{ endif }
         \BLOCK{ endfor +}
     \end{tabular*}
-\end{minipage}
+\end{minipage}%
+\end{figure}
 
 \end{document}

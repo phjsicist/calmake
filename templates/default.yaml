@@ -15,6 +15,11 @@ geometry:
   paper:
     width: 300
     height: 300
+    margins:
+      top: 20
+      bottom: 20
+      left: 10
+      right: 20
   month:
     width: 0.4
-    margin: 0.02
+    margin: 0.05
