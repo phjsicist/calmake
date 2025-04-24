@@ -5,6 +5,7 @@ import datetime
 import os
 import subprocess
 
+import exifread
 import jinja2
 import yaml
 
@@ -23,6 +24,7 @@ parser.add_argument('-t', '--template-name', type=str, help='Name of the templat
 parser.add_argument('-c', '--config', type=str, help='Name or path of the config file')
 parser.add_argument('-y', '--year', type=int, help='Year of the calendar', default=datetime.datetime.now().year)
 parser.add_argument('-m', '--month', type=int, help='Month(s) of the calendar, leave empty for full year', action='append')
+parser.add_argument('-i', '--image', type=str, help='Path to folder containing calendar images')
 args = parser.parse_args()
 
 latex_jinja_env = jinja2.Environment(
@@ -61,6 +63,8 @@ if args.config:
 else:
 	config_name = 'default'
 
+image_path_base = os.path.abspath(args.image)
+
 config['year'] = args.year
 
 weekdays = DAYS2 if config['weekday_long_form'] else DAYS1
@@ -80,6 +84,22 @@ for month in months:
 
 	config['month_name'] = MONTHS[config['language']][month - 1]
 	config['dates'] = [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)]
+
+	image_path = image_path_base + os.sep + f'{month:02d}.jpg'
+	with open(image_path, 'rb') as f:
+		tags = exifread.process_file(f, stop_tag='Image Orientation', details=False)
+		rotation = 0
+		if 'Image Orientation' in tags:
+			value = tags['Image Orientation'].values
+			if 3 in value:
+				rotation = 180
+			elif 6 in value:
+				rotation = 270
+			elif 8 in value:
+				rotation = 90
+
+	config['image_path'] = image_path.replace('\\', '/')
+	config['image_rotation'] = rotation
 
 	with open(output_dir + os.sep + file_identifier + '.tex', 'w', encoding='utf-8') as f:
 		f.write(template.render(**config))

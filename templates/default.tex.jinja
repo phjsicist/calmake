@@ -33,15 +33,24 @@
 
 \begin{document}
 
-\null % for some godforsaken reason, image placement is ignored on empty pages
+%\null % for some godforsaken reason, image placement is ignored on empty pages
 
-\begin{figure}[b]
-\begin{minipage}[t][][b]{\VAR{geometry.grid.month_width}\linewidth}%
+\noindent
+\begin{minipage}[][\VAR{geometry.image.height}\textheight][]{\textwidth}%
+    \centering
+    \includegraphics[angle=\VAR{image_rotation},
+                     width=\linewidth,
+                     height=\VAR{geometry.image.height}\textheight,
+                     keepaspectratio]
+                     {\VAR{image_path}}%
+\end{minipage}
+\\[\VAR{geometry.image.padding}\textheight]
+\begin{minipage}[][\VAR{1 - geometry.image.height - geometry.image.padding}\textheight][]{\VAR{geometry.grid.month_width}\linewidth}%
     \monthfont
-    \resizebox{\linewidth}{\textheight}{ \color{monthcolor} \VAR{month_name} }
+    \resizebox{\linewidth}{\textheight}{\noindent \color{monthcolor} \VAR{month_name} }
 \end{minipage}%
-\hspace{\VAR{geometry.grid.mid_padding}\linewidth}%
-\begin{minipage}[t][][t]{\VAR{1 - geometry.grid.mid_padding - geometry.grid.month_width}\linewidth}%
+\hspace{\VAR{geometry.grid.padding}\linewidth}%
+\begin{minipage}[][\VAR{1 - geometry.image.height - geometry.image.padding}\textheight][]{\VAR{1 - geometry.grid.padding - geometry.grid.month_width}\linewidth}%
     \weekfont
     \large
     \color{weekcolor}
@@ -57,6 +66,5 @@
         \BLOCK{ endfor +}
     \end{tabular*}
 \end{minipage}%
-\end{figure}
 
 \end{document}
