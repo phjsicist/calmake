@@ -1,24 +1,16 @@
 import argparse
 import calendar
-import collections.abc
 import datetime
 import os
 import subprocess
 
-import exifread
 import jinja2
 import yaml
 
 from constants import DAYS1, DAYS2, MONTHS
+from utils import deep_update, extract_exif_rotation
 
-def update(d, u):
-    for k, v in u.items():
-        if isinstance(v, collections.abc.Mapping):
-            d[k] = update(d.get(k, {}), v)
-        else:
-            d[k] = v
-    return d
-
+# define command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', '--template-name', type=str, help='Name of the template file', default='default.tex.jinja')
 parser.add_argument('-c', '--config', type=str, help='Name or path of the config file')
@@ -27,6 +19,7 @@ parser.add_argument('-m', '--month', type=int, help='Month(s) of the calendar, l
 parser.add_argument('-i', '--image', type=str, help='Path to folder containing calendar images')
 args = parser.parse_args()
 
+# define the jinja2 environment for LaTeX
 latex_jinja_env = jinja2.Environment(
     block_start_string = r'\BLOCK{',
 	block_end_string = '}',
@@ -42,14 +35,17 @@ latex_jinja_env = jinja2.Environment(
 	loader = jinja2.FileSystemLoader(os.path.abspath('.\\templates'))
 )
 
+# load the template
 template_name = args.template_name.split('.')[0]
 template_path = os.path.abspath('templates' + os.sep + template_name + '.tex.jinja')
 template = latex_jinja_env.get_template(template_name + '.tex.jinja')
 
+# load the base config file
 base_config_path = os.path.abspath('templates' + os.sep + template_name + '.yaml')
 with open(base_config_path, 'r', encoding='utf-8') as f:
 	config = yaml.safe_load(f)
 
+# update the user config if provided
 if args.config:
 	if os.path.exists(args.config):
 		config_name = os.path.basename(args.config).split('.')[0]
@@ -59,7 +55,7 @@ if args.config:
 		config_path = os.path.abspath('templates' + os.sep + config_name + '.yaml')
     
 	with open(config_path, 'r', encoding='utf-8') as f:
-		update(config, yaml.safe_load(f))
+		deep_update(config, yaml.safe_load(f))
 else:
 	config_name = 'default'
 
@@ -87,20 +83,9 @@ for month in months:
 
 	image_name = [n for n in os.listdir(image_path_base) if n.startswith(f'{month:02d}')][0]
 	image_path = image_path_base + os.sep + image_name
-	with open(image_path, 'rb') as f:
-		tags = exifread.process_file(f, stop_tag='Image Orientation', details=False)
-		rotation = 0
-		if 'Image Orientation' in tags:
-			value = tags['Image Orientation'].values
-			if 3 in value:
-				rotation = 180
-			elif 6 in value:
-				rotation = 270
-			elif 8 in value:
-				rotation = 90
 
 	config['image_path'] = image_path.replace('\\', '/')
-	config['image_rotation'] = rotation
+	config['image_rotation'] = extract_exif_rotation(image_path)
 	config['image_caption'] = image_name.split('.')[0].split('_')[1]
 
 	with open(output_dir + os.sep + file_identifier + '.tex', 'w', encoding='utf-8') as f:

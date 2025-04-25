@@ -1,7 +1,5 @@
 \documentclass{article}
 
-\usepackage[utf8]{inputenc}
-
 \usepackage{geometry}
 \geometry{
     paperwidth=\VAR{geometry.paper.width}mm,
@@ -37,25 +35,25 @@
 
 \begin{document}
 
-\large
+\large % font size
 
 \noindent
 \begin{minipage}[][\VAR{geometry.image.height}\textheight][]{\textwidth}%
     \centering
-    \pbox{\textwidth}{
-    \captionfont
-    \hspace*{\fill} \color{captioncolor} \VAR{image_caption} \\
-    \includegraphics[angle=\VAR{image_rotation},
-                     width=\linewidth,
-                     height=\VAR{geometry.image.height}\textheight,
-                     keepaspectratio]
-                     {\VAR{image_path}}
+    \pbox{\textwidth}{ % minimal width box wrapping the image to align the caption
+        \captionfont
+        \hspace*{\fill} \color{captioncolor} \VAR{image_caption} \\
+        \includegraphics[angle=\VAR{image_rotation},
+                        width=\linewidth,
+                        height=\VAR{geometry.image.height}\textheight,
+                        keepaspectratio]
+                        {\VAR{image_path}}
     }
 \end{minipage}
 \\[\VAR{geometry.image.padding}\textheight]
 \begin{minipage}[][\VAR{1 - geometry.image.height - geometry.image.padding}\textheight][]{\VAR{geometry.grid.month_width}\linewidth}%
     \monthfont
-    \resizebox{\linewidth}{\textheight}{\noindent \color{monthcolor} \VAR{month_name} }
+    \resizebox{\linewidth}{\textheight}{\noindent \color{monthcolor} \VAR{month_name} } % resize text to fill the box
 \end{minipage}%
 \hspace{\VAR{geometry.grid.padding}\linewidth}%
 \begin{minipage}[][\VAR{1 - geometry.image.height - geometry.image.padding}\textheight][]{\VAR{1 - geometry.grid.padding - geometry.grid.month_width}\linewidth}%
