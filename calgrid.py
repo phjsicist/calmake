@@ -1,14 +1,11 @@
 import argparse
-import calendar
 import datetime
 import os
 import subprocess
 
 import jinja2
-import yaml
 
-from constants import DAYS1, DAYS2, MONTHS
-from utils import deep_update, extract_exif_rotation
+from config import CalendarConfig
 
 # define command line arguments
 parser = argparse.ArgumentParser()
@@ -42,8 +39,7 @@ template = latex_jinja_env.get_template(template_name + '.tex.jinja')
 
 # load the base config file
 base_config_path = os.path.abspath('templates' + os.sep + template_name + '.yaml')
-with open(base_config_path, 'r', encoding='utf-8') as f:
-	config = yaml.safe_load(f)
+config = CalendarConfig(base_config_path, args.image, args.year, args.month)
 
 # update the user config if provided
 if args.config:
@@ -52,41 +48,23 @@ if args.config:
 		config_path = os.path.abspath(args.config)
 	else:
 		config_name = args.config.split('.')[0]
-		config_path = os.path.abspath('templates' + os.sep + config_name + '.yaml')
+		config_path = os.path.abspath('configs' + os.sep + config_name + '.yaml')
     
-	with open(config_path, 'r', encoding='utf-8') as f:
-		deep_update(config, yaml.safe_load(f))
+	config.deep_update(config_path)
 else:
 	config_name = 'default'
 
-image_path_base = os.path.abspath(args.image)
-
-config['year'] = args.year
-
-weekdays = DAYS2 if config['weekday_long_form'] else DAYS1
-config['weekdays_line'] = config['no_of_weeks_per_line'] * weekdays[config['language']]
-
+# make output directories
 output_dir = 'output' + os.sep + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '_' + template_name + '_' + config_name
 os.makedirs(output_dir)
 os.makedirs(output_dir + os.sep + 'logs')
 os.makedirs(output_dir + os.sep + 'pdfs')
 
-months = args.month if args.month else [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-for month in months:
+# iterate over months and generate calendar sheets
+for month in config.months:
 	file_identifier = f'{month:02d}'
 
-	first_weekday = datetime.date(config['year'], month, 1).weekday()
-	length_of_month = calendar.monthrange(config['year'], month)[1]
-
-	config['month_name'] = MONTHS[config['language']][month - 1]
-	config['dates'] = [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)]
-
-	image_name = [n for n in os.listdir(image_path_base) if n.startswith(f'{month:02d}')][0]
-	image_path = image_path_base + os.sep + image_name
-
-	config['image_path'] = image_path.replace('\\', '/')
-	config['image_rotation'] = extract_exif_rotation(image_path)
-	config['image_caption'] = image_name.split('.')[0].split('_')[1]
+	config.update_for_month(month)
 
 	with open(output_dir + os.sep + file_identifier + '.tex', 'w', encoding='utf-8') as f:
 		f.write(template.render(**config))
