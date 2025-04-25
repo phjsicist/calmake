@@ -85,7 +85,8 @@ for month in months:
 	config['month_name'] = MONTHS[config['language']][month - 1]
 	config['dates'] = [''] * first_weekday + [str(d) for d in range(1, length_of_month + 1)]
 
-	image_path = image_path_base + os.sep + f'{month:02d}.jpg'
+	image_name = [n for n in os.listdir(image_path_base) if n.startswith(f'{month:02d}')][0]
+	image_path = image_path_base + os.sep + image_name
 	with open(image_path, 'rb') as f:
 		tags = exifread.process_file(f, stop_tag='Image Orientation', details=False)
 		rotation = 0
@@ -100,6 +101,7 @@ for month in months:
 
 	config['image_path'] = image_path.replace('\\', '/')
 	config['image_rotation'] = rotation
+	config['image_caption'] = image_name.split('.')[0].split('_')[1]
 
 	with open(output_dir + os.sep + file_identifier + '.tex', 'w', encoding='utf-8') as f:
 		f.write(template.render(**config))

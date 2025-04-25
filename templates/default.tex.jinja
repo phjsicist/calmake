@@ -19,30 +19,38 @@
 
 \usepackage{tabularx}
 
-\pagestyle{empty}
-
 \usepackage{fontspec}
+\newfontfamily{\captionfont}{\VAR{font.caption}}
 \newfontfamily{\monthfont}{\VAR{font.month}}
 \newfontfamily{\weekfont}{\VAR{font.week}}
 \newfontfamily{\daysfont}{\VAR{font.day}}
 
 \usepackage[table]{xcolor}
+\definecolor{captioncolor}{rgb}{\VAR{color.caption|join(',')}}
 \definecolor{monthcolor}{rgb}{\VAR{color.month|join(',')}}
 \definecolor{weekcolor}{rgb}{\VAR{color.week|join(',')}}
 \definecolor{daycolor}{rgb}{\VAR{color.day|join(',')}}
 
+\usepackage{pbox}
+
+\pagestyle{empty} % no page numbers
+
 \begin{document}
 
-%\null % for some godforsaken reason, image placement is ignored on empty pages
+\large
 
 \noindent
 \begin{minipage}[][\VAR{geometry.image.height}\textheight][]{\textwidth}%
     \centering
+    \pbox{\textwidth}{
+    \captionfont
+    \hspace*{\fill} \color{captioncolor} \VAR{image_caption} \\
     \includegraphics[angle=\VAR{image_rotation},
                      width=\linewidth,
                      height=\VAR{geometry.image.height}\textheight,
                      keepaspectratio]
-                     {\VAR{image_path}}%
+                     {\VAR{image_path}}
+    }
 \end{minipage}
 \\[\VAR{geometry.image.padding}\textheight]
 \begin{minipage}[][\VAR{1 - geometry.image.height - geometry.image.padding}\textheight][]{\VAR{geometry.grid.month_width}\linewidth}%
@@ -52,7 +60,6 @@
 \hspace{\VAR{geometry.grid.padding}\linewidth}%
 \begin{minipage}[][\VAR{1 - geometry.image.height - geometry.image.padding}\textheight][]{\VAR{1 - geometry.grid.padding - geometry.grid.month_width}\linewidth}%
     \weekfont
-    \large
     \color{weekcolor}
     \begin{tabular*}{\linewidth}[t]{@{\extracolsep{\fill}} \VAR{7*no_of_weeks_per_line*'c'}}
         \VAR{ weekdays_line|join('&') } \\[\VAR{geometry.grid.row_height}mm]
@@ -65,6 +72,6 @@
         \BLOCK{ endif }
         \BLOCK{ endfor +}
     \end{tabular*}
-\end{minipage}%
+\end{minipage}
 
 \end{document}
