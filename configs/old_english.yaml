@@ -1,0 +1,11 @@
+language: en
+weekday_long_form: true
+
+color:
+  week: [0.3, 0.3, 0.3]
+
+font:
+  caption: 'Berlin Sans FB'
+  month: 'Old English Text MT'
+  week: 'Berlin Sans FB'
+  day: 'Berlin Sans FB'

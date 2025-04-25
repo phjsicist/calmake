@@ -1,0 +1,14 @@
+no_of_weeks_per_line: 2
+
+font:
+  caption: 'Franklin Gothic Book'
+  month: 'Franklin Gothic Medium'
+  week: 'Franklin Gothic Book'
+  day: 'Franklin Gothic Book'
+
+color:
+  month: [0.1, 0.1, 0.1]
+
+geometry:
+  grid:
+    month_width: 0.25

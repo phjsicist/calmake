@@ -1,0 +1,17 @@
+no_of_weeks_per_line: 2
+
+font:
+  caption: 'Berlin Sans FB'
+  month: 'Gang of Three'
+  week: 'Berlin Sans FB'
+  day: 'Berlin Sans FB'
+
+color:
+  caption: [0.3, 0.3, 0.3]
+  month: [0, 0, 0]
+  week: [0.3, 0.3, 0.3]
+  day: [0, 0, 0]
+
+geometry:
+  grid:
+    month_width: 0.3

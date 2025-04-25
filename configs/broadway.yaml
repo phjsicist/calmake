@@ -1,0 +1,14 @@
+no_of_weeks_per_line: 2
+
+color:
+  week: [0.3, 0.3, 0.3]
+
+font:
+  caption: 'Century Gothic'
+  month: 'Broadway'
+  week: 'Century Gothic'
+  day: 'Century Gothic'
+
+geometry:
+  grid:
+    row_height: 4
