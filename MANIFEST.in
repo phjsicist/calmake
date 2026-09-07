@@ -1,0 +1,2 @@
+include src/calmake/**/*.yaml
+include src/calmake/**/*.jinja

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calmake"
+version = "1.0.0"
+authors = [{name = "Janis Schertenleib", email="janis.schertenleib@outlook.com"}]
+description = "Make calendar sheets with your photos, straight from the command line!"
+dependencies = [
+  "jinja2",
+  "exifread",
+  "pyyaml"
+]
+
+[project.scripts]
+calmake = "calmake:cli"
