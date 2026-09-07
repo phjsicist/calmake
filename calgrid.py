@@ -11,7 +11,7 @@ from config import CalendarConfig
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', '--template-name', type=str, help='Name of the template file', default='default.tex.jinja')
 parser.add_argument('-c', '--config', type=str, help='Name or path of the config file')
-parser.add_argument('-y', '--year', type=int, help='Year of the calendar', default=datetime.datetime.now().year)
+parser.add_argument('-y', '--year', type=int, help='Year of the calendar', default=datetime.datetime.now().year+1)
 parser.add_argument('-m', '--month', type=int, help='Month(s) of the calendar, leave empty for full year', action='append')
 parser.add_argument('-i', '--image', type=str, help='Path to folder containing calendar images')
 args = parser.parse_args()

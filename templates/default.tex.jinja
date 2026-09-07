@@ -28,6 +28,13 @@
 \definecolor{monthcolor}{rgb}{\VAR{color.month|join(',')}}
 \definecolor{weekcolor}{rgb}{\VAR{color.week|join(',')}}
 \definecolor{daycolor}{rgb}{\VAR{color.day|join(',')}}
+\definecolor{highlightcolor}{rgb}{\VAR{color.highlight|join(',')}}
+
+\newcommand\highlight{
+    \BLOCK{- if highlight.mode == 'bold' -}\bfseries
+    \BLOCK{- elif highlight.mode == 'italic' -}\itshape
+    \BLOCK{- endif -}
+}
 
 \usepackage{pbox}
 
@@ -57,13 +64,22 @@
 \end{minipage}%
 \hspace{\VAR{geometry.grid.padding}\linewidth}%
 \begin{minipage}[][\VAR{1 - geometry.image.height - geometry.image.padding}\textheight][]{\VAR{1 - geometry.grid.padding - geometry.grid.month_width}\linewidth}%
-    \weekfont
-    \color{weekcolor}
-    \begin{tabular*}{\linewidth}[t]{@{\extracolsep{\fill}} \VAR{7*no_of_weeks_per_line*'c'}}
-        \VAR{ weekdays_line|join('&') } \\[\VAR{geometry.grid.row_height}mm]
-        \BLOCK{ for d in dates }
-        \color{daycolor} \daysfont \VAR{ d -}
-        \BLOCK{ if loop.index % (no_of_weeks_per_line * 7) == 0 }
+    \begin{tabular*}{\linewidth}[t]{@{\extracolsep{\fill}} \VAR{no_of_days_per_line*'c'}}
+        \BLOCK{ for w in weekdays_line } {
+        \BLOCK{- if (loop.index0 % 7 + 1) in highlight.weekdays } \highlight \color{highlightcolor}
+        \BLOCK{- else } \color{weekcolor} \BLOCK{ endif -}
+        \weekfont \VAR{ w -} }
+        \BLOCK{ if loop.index % no_of_days_per_line == 0 }
+        \VAR{- '\\\\' }[\VAR{geometry.grid.row_height}mm]
+        \BLOCK{ else }
+        \VAR{- '&' -}
+        \BLOCK{ endif }
+        \BLOCK{ endfor +}
+        \BLOCK{ for d in dates } {
+        \BLOCK{- if (loop.index0 % 7 + 1) in highlight.weekdays } \highlight \color{highlightcolor}
+        \BLOCK{- else } \color{daycolor} \BLOCK{ endif -}
+        \daysfont \VAR{ d -} }
+        \BLOCK{ if loop.index % no_of_days_per_line == 0 }
         \VAR{- '\\\\' }[\VAR{geometry.grid.row_height}mm]
         \BLOCK{ else }
         \VAR{- '&' -}

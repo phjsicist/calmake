@@ -2,6 +2,11 @@ no_of_weeks_per_line: 2
 
 color:
   week: [0.3, 0.3, 0.3]
+  highlight: [0.3, 0.3, 0.3]
+
+highlight:
+  mode: 'bold'
+  weekdays: [6, 7]
 
 font:
   caption: 'Century Gothic'

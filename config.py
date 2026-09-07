@@ -21,6 +21,7 @@ class CalendarConfig(dict):
     def _generate_weekdays_line(self) -> None:
         weekdays = DAYS2 if self['weekday_long_form'] else DAYS1
         self['weekdays_line'] = self['no_of_weeks_per_line'] * weekdays[self['language']]
+        self['no_of_days_per_line'] = 7*self['no_of_weeks_per_line']
 
     def deep_update(self, config_path) -> None:
         """Recursively update the config with another config."""

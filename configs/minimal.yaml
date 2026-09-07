@@ -8,6 +8,10 @@ font:
 
 color:
   month: [0.1, 0.1, 0.1]
+  highlight: [0.3, 0.3, 0.3]
+
+highlight:
+  weekdays: [6, 7]
 
 geometry:
   grid:
