@@ -1,0 +1,21 @@
+no_of_weeks_per_line: 2
+
+font:
+  caption: 'Franklin Gothic Medium'
+  month: 'Impact'
+  week: 'Franklin Gothic Heavy'
+  day: 'Franklin Gothic Heavy'
+
+color:
+  caption: [0.1, 0.1, 0.1]
+  day: [0.4, 0.4, 0.4]
+  week: [0.1, 0.1, 0.1]
+  month: [0.1, 0.1, 0.1]
+  highlight: [0.1, 0.1, 0.1]
+
+highlight:
+  weekdays: [6, 7]
+
+geometry:
+  grid:
+    month_width: 0.25
