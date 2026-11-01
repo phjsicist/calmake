@@ -32,7 +32,7 @@ def calmake(template_name: str|None='default', style_name: str|None=None, year: 
 	if year is None:
 		year = datetime.datetime.now().year + 1
 	if months is None:
-		months = list(int(range(1, 13)))
+		months = list(range(1, 13))
 	if image is None:
 		image = os.path.abspath('.')
 
